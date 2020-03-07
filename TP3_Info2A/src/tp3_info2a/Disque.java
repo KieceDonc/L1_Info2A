@@ -9,16 +9,27 @@ package tp3_info2a;
  *
  * @author vv224843
  */
-public class Disque {
+public class Disque extends ObjetPlan {
     
     private Point center;
-    private Segment rayon;
+    private double rayon;
     private double area;
-
-    public Disque(Point center,double rayon) {
+    private double perimeter;
+    
+    public Disque(Point center,double rayon,String nomV) {
+        super(nomV);
         setCenter(center);
-        setRayon();
-        setArea(calculArea());
+        setRayon(rayon);
+        setArea();
+        setPerimeter();
+    }
+    
+    public Disque(Point center,double rayon) {
+        super("Default");
+        setCenter(center);
+        setRayon(rayon);
+        setArea();
+        setPerimeter();
     }
 
     public Point getCenter() {
@@ -29,32 +40,45 @@ public class Disque {
         this.center = center;
     }
 
-    public Segment getRayon() {
+    public double getRayon() {
         return rayon;
     }
 
-    private void setRayon(Segment rayon) {
+    private void setRayon(double rayon) {
         this.rayon = rayon;
     }
 
-    public double getArea() {
-        return area;
-    }
-
-    private void setArea(double area) {
-        this.area = area;
+    private void setArea() {
+        this.area = Math.PI*Math.pow(rayon, 2);;
     }
     
-    private double calculArea(){
-        return Math.PI*Math.pow(rayon.getSegmentLength(), 2);
+    private void setPerimeter(){
+        this.perimeter=Math.PI*rayon*2;
     }
     
     public boolean isInsideCircle(Point p){
-        return new Segment(center,p).getSegmentLength()<=rayon.getSegmentLength();
+        return new Segment(center,p).getSegmentLength()<=rayon;
+    }
+     
+    @Override
+    public String toString(){
+        return super.toString()+" : {"+center.toString()+"}, "+rayon
+                +"\n Périmètre : "+perimeter
+                +"\n Aire : "+area;
     }
     
-    public String toString(){
-        return "Disque : {"+center.toString()+"}, "+rayon.getSegmentLength();
+    public boolean equals(Disque d){
+        return center.equals(d.getCenter())&&rayon==d.getRayon();
+    }
+
+    @Override
+    public double getPerimetre() {
+        return perimeter;
+    }
+
+    @Override
+    public double getAire() {
+        return area;
     }
     
 }

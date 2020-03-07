@@ -9,103 +9,111 @@ package tp3_info2a;
  *
  * @author vv224843
  */
-public class Triangle {
-    
-    private Point Point1,Point2,Point3;
-    private Segment Segment1,Segment2,Segment3;
+public class Triangle extends ObjetPlan {
+
     private double area;
-
-    public Triangle(Point P1, Point P2, Point P3) {
-        setPoint1(P1);
-        setPoint2(P2);
-        setPoint3(P3);
-        setSegment1(new Segment(getPoint1(),getPoint2()));
-        setSegment2(new Segment(getPoint2(),getPoint3()));
-        setSegment3(new Segment(getPoint3(),getPoint1()));
-        setArea(calculArea());
-    }
     
-    public Point getPoint1() {
-        return Point1;
-    }
+    private Point[] lstPoint;
+    private Segment[] lstSegment = new Segment[3];
 
-    private void setPoint1(Point P1) {
-        this.Point1 = P1;
+    public Triangle(Point P1, Point P2, Point P3,String nomV) {
+        super(nomV);
+        setLstPoint(P1,P2,P3);
+        setLstSegment();
+        setArea();
     }
-
-    public Point getPoint2() {
-        return Point2;
-    }
-
-    private void setPoint2(Point P2) {
-        this.Point2 = P2;
-    }
-
-    public Point getPoint3() {
-        return Point3;
-    }
-
-    private void setPoint3(Point P3) {
-        this.Point3 = P3;
-    }
-
-    public Segment getSegment1() {
-        return Segment1;
-    }
-
-    private void setSegment1(Segment Segment1) {
-        this.Segment1 = Segment1;
-    }
-
-    public Segment getSegment2() {
-        return Segment2;
-    }
-
-    private void setSegment2(Segment Segment2) {
-        this.Segment2 = Segment2;
-    }
-
-    public Segment getSegment3() {
-        return Segment3;
-    }
-
-    private void setSegment3(Segment Segment3) {
-        this.Segment3 = Segment3;
-    }
-
-    public double getArea() {
-        return this.area;
-    }
-
-    private void setArea(double Area) {
-        this.area = Area;
-    }
-    
-    public double getPerimeter(){
-        return getSegment1().getSegmentLength()+getSegment2().getSegmentLength()+getSegment3().getSegmentLength();
-    }
-    
-    private double calculArea(){
-        double S1L = getSegment1().getSegmentLength();
-        double S2L = getSegment2().getSegmentLength();
-        double S3L = getSegment3().getSegmentLength();
         
-        Segment hypothenuse = S1L >= S3L ? (S1L >= S2L ? getSegment1():getSegment2()):getSegment3();
-        Segment Height;
-        if(!hypothenuse.getP1().equals(getPoint1())){
-            Height = new Segment(hypothenuse.getMiddle(),getPoint1());
-        }else if(!hypothenuse.getP2().equals(getPoint2())){
-            Height = new Segment(hypothenuse.getMiddle(),getPoint2());
-        }else{
-            Height = new Segment(hypothenuse.getMiddle(),getPoint3());            
+    public Triangle(Point P1, Point P2, Point P3) {
+        super(P1.getNom()+"_"+P2.getNom()+"_"+P3.getNom());
+        setLstPoint(P1,P2,P3);
+        setLstSegment();
+        setArea();
+    }
+    
+    public Triangle(Triangle t) {
+        super(t.getNom());
+        lstPoint=t.getLstPoint();
+        lstSegment=t.getLstSegment();
+        area=t.getAire();
+    }
+
+    public Point[] getLstPoint() {
+        return lstPoint;
+    }
+
+    public void setLstPoint(Point p1, Point p2, Point p3) {
+        this.lstPoint = new Point[]{p1,p2,p3};
+    }
+
+    public Segment[] getLstSegment() {
+        return lstSegment;
+    }
+
+    public void setLstSegment() {
+        for(int x=0;x<lstPoint.length-1;x++){
+            lstSegment[x]=new Segment(lstPoint[x],lstPoint[x+1]);
         }
-        return (hypothenuse.getSegmentLength()*Height.getSegmentLength())/2;
+    }
+    
+    private void setArea(){
+        double longestSegmentLength=0;
+        double Height=0;
+        for(int x=0;x<lstSegment.length;x++){ // on cherche le plus grand segment
+            double currentSegmentLength = lstSegment[x].getSegmentLength();
+            if(longestSegmentLength < currentSegmentLength){
+                longestSegmentLength = currentSegmentLength;
+                Point HeightStart = lstSegment[x].getMiddle(); // utilisé pour calculer la hauteur
+                for(int y=0;y<lstPoint.length;y++){ // on cherche le point qui n'est pas sur le segment de l'hypothénuse
+                    if(!lstPoint[y].equals(lstSegment[x].getP1())){
+                        if(!lstPoint[y].equals(lstSegment[x].getP2())){
+                            Height = new Segment(HeightStart,lstPoint[y]).getSegmentLength(); // une fois trouver on calcul la hauteur
+                        }
+                    }
+                }
+            }
+        }
+        this.area =(longestSegmentLength*Height)/2;
     }
     
     public String toString(){
-        return "Triangle :{"+getPoint1().toString()+", "+getPoint2().toString()+", "+getPoint3().toString()+"}"+
-                "\nPérimètre :"+getPerimeter()+
-                "\nAire"+getArea();
+        String toReturn="";
+        toReturn+="Triangle :{";
+        for(int x=0;x<lstPoint.length;x++){
+            toReturn+=lstPoint[x].toString();
+            if(x!=lstPoint.length-1){
+                toReturn+=", ";
+            }else{
+                toReturn+="}";
+            }
+        }
+        toReturn+="\n Périmètre : "+getPerimetre()+"\n Aire : "+getAire();
+        return toReturn;
+    }
+    
+    public boolean equals(Triangle t){
+        int cmpt=0;
+        for(int x=0;x<lstSegment.length;x++){
+            Segment[] toWorkWith = t.getLstSegment();
+            for(int y=0;y<toWorkWith.length;y++){
+                if(lstSegment[x].equals(toWorkWith[y])){
+                    cmpt++;
+                }
+            }
+            if(cmpt==lstSegment.length){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double getPerimetre() {
+        return getLstSegment()[0].getSegmentLength()+getLstSegment()[1].getSegmentLength()+getLstSegment()[2].getSegmentLength();
+    }
+
+    @Override
+    public double getAire() {
+        return this.area;
     }
     
 }

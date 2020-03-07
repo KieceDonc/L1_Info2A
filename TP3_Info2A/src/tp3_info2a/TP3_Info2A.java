@@ -19,10 +19,15 @@ public class TP3_Info2A {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Fraction F;
         try {
-            F = new Fraction(3,2);
-            System.out.println(F.toString());
+            Disque d1 = new Disque(new Point(3.5,2.5),0.5);
+            System.out.println(d1.toString());
+            
+            Segment s1 = new Segment(new Point(1,2),new Point(3.5,2.5));
+            System.out.println(s1.toString());
+            
+            Triangle t1 = new Triangle(new Point(1,2),new Point(3.5,2.5),new Point(3,0.5));
+            System.out.println(t1.toString());
         } catch (Exception ex) {
             Logger.getLogger(TP3_Info2A.class.getName()).log(Level.SEVERE, null, ex);
         }
