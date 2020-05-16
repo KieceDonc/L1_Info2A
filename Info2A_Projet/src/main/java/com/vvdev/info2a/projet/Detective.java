@@ -34,12 +34,11 @@ public class Detective {
     
     
     public void avancer(int nbCase){
-        int max = plateau.getReserve().getSize();
+        int max = plateau.getReserve().getSize()-1;
         hasEverMove=true;
-        nbCase-=1;
-        position+=nbCase;
-        if(position>=max){ // Ex position = 16, max = 16
-            position-=max; // position = 16-16 = 0
+        position+=nbCase-1;
+        if(position>max){ // Ex position = 16, max = 16
+            position-=max+1; // position = 16-16 = 0
         }
     }
     

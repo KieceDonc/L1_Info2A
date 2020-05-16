@@ -54,24 +54,6 @@ public class LesJoueurs {
         }
     }
     
-    public void ajouteJoueurs(LesJoueurs toAdd) throws Exception{
-        if(toAdd.getNbJoueurs()>0){
-            boolean playersCanBeAdd = true;
-            int cmpt=0;
-            do{
-                if(getIndiceJoueur(toAdd.getJoueur(cmpt))!=-1){
-                    playersCanBeAdd = false;
-                    throw new Exception("One player is already in the list");
-                }
-                cmpt++;
-            }while(cmpt<toAdd.getNbJoueurs()&&playersCanBeAdd);
-
-            for(int x=0;x<toAdd.getNbJoueurs();x++){
-                this.ajouteJoueur(toAdd.getJoueur(x));
-            }
-        }
-    }    
-    
     public Joueur rechJoueur(String playerName){
         if(getNbJoueurs()==0){
             return null;
@@ -88,24 +70,6 @@ public class LesJoueurs {
             cmpt++;
         }while(cmpt<getNbJoueurs()&&notFound);
         return toReturn;
-    }
-    
-    public void supprimeJoueur(Joueur j) throws Exception{
-        int indPlayer = getIndiceJoueur(j);
-        if(indPlayer!=-1){
-            listJ.remove(indPlayer);
-        }else{
-            throw new Exception("Trying to delete a player who's not in the list");
-        }
-    }
-    
-    /**
-     * Supprime toutes les données des joueurs pour permettre un nouveau tour
-     */
-    public void wipeDataForEveryPlayer(){
-        for(int x=0;x<listJ.size();x++){
-            listJ.get(x).wipeData();
-        }
     }
     
     @Override

@@ -5,6 +5,8 @@
  */
 package com.vvdev.info2a.projet;
 
+import java.util.Objects;
+
 /**
  *
  * @author Valentin
@@ -16,7 +18,7 @@ public class Jeton {
     public final static String gangster2 = "gangster_2";
     public final static String gangster3 = "gangster_3";
     public final static String potDeVin = "PotDeVin";
-    public final static String[] allColor = new String[]{"rouge","bleu","vert","jaune","rose","orange","violet"};
+    public final static String[] allColor = new String[]{"rouge","bleu","vert","jaune","gris","orange","cyan"};
     public final static String[] allType = new String[]{boss,gangster1,gangster2,gangster3,potDeVin};
 
     
@@ -63,10 +65,33 @@ public class Jeton {
     public boolean isPotDeVin(){
         return this.getType().equals(potDeVin);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Jeton other = (Jeton) obj;
+        if (!Objects.equals(this.type, other.type)) {
+            return false;
+        }
+        if (!Objects.equals(this.color, other.color)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
     @Override
     public String toString() {
-        String gang = color.substring(0, 1).toUpperCase(); // get the first letter of the gang name. Ex rouge = R
+        String gang = color.substring(0,1).toUpperCase(); // get the first letter of the gang name. Ex rouge = R
         if(isBoss()){
             return "["+gang+"]";
         }else if(isGangster1()){
@@ -78,13 +103,5 @@ public class Jeton {
         }else{
             return "$"+gang;
         }
-    }
-    
-    
-   
-    
-    
-    
-    
-    
+    }      
 }

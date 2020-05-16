@@ -62,6 +62,8 @@ public class Plateau {
                 }
             }
         }
+        
+        reserve.melange();
     }
     
     public Reserve getReserve(){
@@ -84,21 +86,22 @@ public class Plateau {
     public String toString() {
         String toReturn ="";
         for(int x=0;x<reserve.getSize();x++){
+            Jeton current = reserve.getJeton(x);
             if(detective.hasEverMove()){
                 if(x==detective.getPosition()){
                     if(x!=0){
-                        toReturn+=" ";
+                        toReturn+=" <> - ";
+                    }else{
+                        toReturn+="<> - ";
                     }
-                    toReturn+="<> -";
+                    toReturn+=current.toString()+" -";
                 }else{
-                    Jeton current = reserve.getJeton(x);
                     if(x!=0){
                         toReturn+=" ";
                     }
                     toReturn+=current.toString()+" -";
                 }
-            }else{
-                Jeton current = reserve.getJeton(x);
+           }else{
                 if(x==0){
                     toReturn+="<> - ";   
                 }else{
@@ -106,6 +109,9 @@ public class Plateau {
                 }
                 toReturn+=current.toString()+" -";
             }
+        }
+        if(detective.getPosition()==reserve.getSize()){
+            toReturn+=" <>";
         }
         return toReturn;
     }

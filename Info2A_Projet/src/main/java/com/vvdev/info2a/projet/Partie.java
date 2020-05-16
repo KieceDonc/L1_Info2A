@@ -17,7 +17,6 @@ public class Partie {
     private Plateau plateau;
     private LesJoueurs lesJoueurs;
     private Prison prison;
-    private De de;
     private Joueur currentPlayer;
     
     
@@ -48,8 +47,8 @@ public class Partie {
         lesJoueurs = new LesJoueurs();
         prison = new Prison();
         plateau = new Plateau();
-        de = new De(this);
-        for(int x=0;x<askNumberPlayer();x++){
+        int nbJoueur = askNumberPlayer();
+        for(int x=0;x<nbJoueur;x++){
             createJoueur(x);
         }
         play();
@@ -62,7 +61,7 @@ public class Partie {
     private int askNumberPlayer(){
         int number=0;
         do{
-            System.out.println("Entrer le nombre de joueurs ( minimum 2 ) :\n");
+            System.out.println("Entrer le nombre de joueurs ( minimum 2 ) :");
             number=Lire.i();
         }while(number<2);
         return number;
@@ -75,7 +74,7 @@ public class Partie {
     private void createJoueur(int indexPlayer){
         boolean allowToContinue = false;
         do{
-            System.out.println("Entrer le pseudu du joueur "+indexPlayer+" :\n");
+            System.out.println("Entrer le pseudu du joueur "+(indexPlayer+1)+" :");
             String pseudo=Lire.S();
             if(pseudo.length()>0){
                 try {
@@ -93,6 +92,7 @@ public class Partie {
         do{
             makeATurn();
         }while(!shouldEndParty());
+        System.out.println("5 boss sont en prison ! Voici les résultats :\n");
         calculPoints();
         showPointsAndWinner();
     }
@@ -107,9 +107,8 @@ public class Partie {
     }
     
     private void makeAPlayerTurn(){
-        int tirage = de.tirage();
+        int tirage = De.tirage();
         showPartyStatus();
-        showWhoMustPlay();
         showTirageResult(tirage);
         int userChoice = askCbmAvancerDetective(tirage);
         plateau.getDetective().avancer(userChoice);
@@ -117,17 +116,15 @@ public class Partie {
     }
     
     private void showPartyStatus(){
-        System.out.println("*************************************************\n\n"
+        System.out.println("*************************************************\n"
                 +
                 plateau.toString()+"\n\n"
+                +
+                "Prison : "+prison.toString()+"\n\n"
                 +
                 lesJoueurs.toString()+"\n"
                 +
                 "C'est à "+currentPlayer.getPseudo()+" de jouer");
-    }
-    
-    private void showWhoMustPlay(){
-        System.out.println("C'est à "+currentPlayer.getPseudo()+" de jouer !");
     }
     
     private void showTirageResult(int tirage){
@@ -157,53 +154,14 @@ public class Partie {
      */
     private void treatmentJeton(){
         Jeton current = plateau.getJetonOnDetectivePosition();
+        plateau.getReserve().retireJeton(current);
         if(current.isBoss()){
-            plateau.getReserve().retireJeton(current);
             prison.addPrisonnier(current);
         }else{
-            plateau.getReserve().retireJeton(current);
             currentPlayer.getReserve().addJeton(current);
         }
     }
-    
-    /**
-     * ask to user if he want to take pot de vin
-     * @param j
-     * @return 
-     */
-    /*private boolean playerTakePotDeVin(Jeton j){
-        boolean playerTakePotDeVin = false;
-        boolean allowToContinue = false;
-        do{
-            System.out.println("Voulez-vous récupérer le pot de vin "+j.getColor()+" ? oui/non o/n");
-            String userInput=Lire.S();
-            switch(userInput){
-                case "oui":{
-                    allowToContinue=true;
-                    playerTakePotDeVin=true;
-                    break;
-                }
-                case "o":{
-                    allowToContinue=true;
-                    playerTakePotDeVin=true;
-                    break;
-                }
-                case "non":{
-                    allowToContinue=true;
-                    break;
-                }
-                case "n":{
-                    allowToContinue=true;
-                    break;
-                }
-                default :{
-                    System.out.println("Veuillez entrer oui ou non");
-                }
-            }
-        }while(!allowToContinue);
-        return playerTakePotDeVin;
-    }*/
-    
+
     private boolean shouldEndParty(){
         return prison.getNbPrisonnier()>=5;
     }
@@ -213,50 +171,73 @@ public class Partie {
             Joueur currentJoueur = lesJoueurs.getJoueur(x);
             Reserve currentReserve = currentJoueur.getReserve();
             int currentPoint = 0;
-            for(int y=0;y<currentReserve.getSize();x++){
+            for(int y=0;y<currentReserve.getSize();y++){
                 Jeton currentJeton = currentReserve.getJeton(y);
                 boolean bossInPrison = false;
                 if(prison.getJetonBossByColor(currentJeton)!=null){
                     bossInPrison = true;
                 }
-                switch(currentJeton.getType()){
-                    case Jeton.gangster1:{
-                        if(bossInPrison){
-                            currentPoint+=1;
-                        }else{
-                            currentPoint-=1;
-                        }
-                        break;
+                if(currentJeton.isGangster1()){
+                    if(bossInPrison){
+                        currentPoint+=1;
+                    }else{
+                        currentPoint-=1;
                     }
-                    case Jeton.gangster2:{
-                        if(bossInPrison){
-                            currentPoint+=2;
-                        }else{
-                            currentPoint-=2;
-                        }
-                        break;
-                    }
-                    case Jeton.gangster3:{
-                        if(bossInPrison){
-                            currentPoint+=3;
-                        }else{
-                            currentPoint-=3;
-                        }
-                        break;
-                    }
-                    case Jeton.potDeVin:{
-                        if(!bossInPrison){
-                            currentPoint+=3;
-                        }
-                    }
+                }else if(currentJeton.isGangster2()){
+                    if(bossInPrison){
+                        currentPoint+=2;
+                    }else{
+                        currentPoint-=2;
+                    }                    
+                }else if(currentJeton.isGangster3()){
+                    if(bossInPrison){
+                        currentPoint+=3;
+                    }else{
+                        currentPoint-=3;
+                    }                    
+                }else{
+                    if(!bossInPrison){
+                        currentPoint+=3;
+                    }                    
                 }
             }
-            currentPlayer.setScore(currentPoint);
+            currentJoueur.setScore(currentPoint);
         }
     }
     
-    private void showPointsAndWinner(){
-        
+    private void showPointsAndWinner() {
+        try {
+            String toShow="";
+            int scoreMax=0;
+            LesJoueurs winners = new LesJoueurs();
+            for(int x=0;x<lesJoueurs.getNbJoueurs();x++){
+                Joueur currentJoueur = lesJoueurs.getJoueur(x);
+                int currentScore = currentJoueur.getScore();
+                if(currentScore>scoreMax){
+                    scoreMax= currentScore;
+                    winners = new LesJoueurs();
+                    winners.ajouteJoueur(currentJoueur);
+                }else if(currentScore == scoreMax){
+                    winners.ajouteJoueur(currentJoueur);
+                }
+                toShow+=currentJoueur.getPseudo()+" score : "+currentScore+"\n";
+            }
+            toShow+="\n";
+            if(winners.getNbJoueurs()==1){
+                toShow+="Le vainqueur est :";
+            }else{
+                toShow+="Les vainqueurs sont :";
+            }
+            toShow+="\n";
+            for(int x=0;x<winners.getNbJoueurs();x++){
+                Joueur currentJoueur = winners.getJoueur(x);
+                toShow+=currentJoueur.getPseudo()+"\n";
+            }
+            toShow+="\n";
+            System.out.println(toShow);
+        } catch (Exception ex) {
+            Logger.getLogger(Partie.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
    
 }

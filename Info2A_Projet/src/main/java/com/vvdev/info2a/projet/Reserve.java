@@ -46,14 +46,20 @@ public class Reserve {
           if (getJeton(i).equals(j)){
               this.lstJeton.remove(i);  
               trouve = true;
+          }else{ 
+              i++;
           }
-          else i++;
         }      
     }
     
-    public void addJetonsFromReverse(Reserve r){
-        for(int x=0;x<r.getSize();x++){
-            this.addJeton(r.getJeton(x));
+    public void melange(){
+        int p1=0; // position 1
+        Jeton j1;
+        for(int x=0;x<1000;x++){
+            p1 = (int)(Math.random()*lstJeton.size());
+            j1 = lstJeton.get(p1);
+            lstJeton.remove(p1);
+            lstJeton.add(j1);
         }
     }
 

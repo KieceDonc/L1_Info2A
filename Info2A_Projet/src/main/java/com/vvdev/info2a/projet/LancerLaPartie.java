@@ -9,11 +9,13 @@ package com.vvdev.info2a.projet;
  *
  * @author Valentin
  */
-public class De {
-    
-    private static int[] faces = new int[]{2,3,4};
+public class LancerLaPartie {
 
-    public static int tirage(){
-        return faces[(int)(Math.random()*3)];
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        new Partie();
     }
+    
 }

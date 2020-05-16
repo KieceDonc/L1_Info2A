@@ -45,15 +45,7 @@ public class Joueur {
     public void setScore(int score) {
         this.score = score;
     }
-    
-    /**
-     * Supprime tout les données de cette instance de Joueur permettant un nouveau tour
-     */
-    public void wipeData(){
-        reserve = new Reserve();
-        score = 0;
-    }
-    
+   
     public boolean equals(Joueur j){
         return j.getPseudo().equals(this.pseudo);
     }

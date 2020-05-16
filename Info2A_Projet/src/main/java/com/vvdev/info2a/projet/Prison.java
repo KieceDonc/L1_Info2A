@@ -43,7 +43,7 @@ public class Prison {
        boolean founded = false;
        int cmpt=0;
        do{
-           if(color.equals(prison.getJeton(cmpt))){
+           if(color.equals(prison.getJeton(cmpt).getColor())){
                founded=true;
            }else{
              cmpt++;    
@@ -55,5 +55,16 @@ public class Prison {
            return null;
        }
     }
+
+    @Override
+    public String toString() {
+        String toReturn="";
+        for(int x=0;x<prison.getSize();x++){
+            toReturn+="["+prison.getJeton(x).getColor().substring(0,1).toUpperCase()+"] ";
+        }
+        return toReturn;
+    }
+    
+    
     
 }
